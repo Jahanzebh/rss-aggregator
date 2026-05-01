@@ -8,14 +8,16 @@ FEEDS = [
 ]
 
 KEYWORDS = [
-    "console games",
-    "pc games",
-    "new release",
-    "game deals and discounts",
-    "gaming",
-    "Nintendo",
+    "console", 
+    "games", 
+    "release", 
+    "deals", 
+    "discount", 
     "Sony", 
-  "GTA" 
+    "Nintendo", 
+    "GTA", 
+    "PlayStation",
+    "PS5"
 ]
 
 def matches(entry):
