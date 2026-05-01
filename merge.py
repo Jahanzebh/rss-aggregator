@@ -2,6 +2,7 @@ import feedparser
 import time
 from datetime import datetime
 from xml.etree.ElementTree import Element, SubElement, tostring
+import collections
 
 # --- 1. THE NEWS NET (SOURCES) ---
 FEEDS = [
@@ -25,7 +26,7 @@ FEEDS = [
     "https://www.eurogamer.net/feed/digitalfoundry",
     "https://www.reddit.com/r/GameDeals/.rss",
     
-    # Your Personal Google Alert
+    # Your Personal Google Alerts
     "https://www.google.com/alerts/feeds/00744178061068326504/7865044773089010058",
     "https://www.google.com/alerts/feeds/00744178061068326504/11084685464649422787",
     "https://www.google.com/alerts/feeds/00744178061068326504/11084685464649421116",
@@ -36,8 +37,7 @@ FEEDS = [
     "https://www.google.com/alerts/feeds/00744178061068326504/17762728314234451441",
     "https://www.google.com/alerts/feeds/00744178061068326504/561232884005249369",
     "https://www.google.com/alerts/feeds/00744178061068326504/9023093616418967248",
-    "https://www.google.com/alerts/feeds/00744178061068326504/9023093616418965256",
-    "https://www.google.com/alerts/feeds/00744178061068326504/7865044773089010058"
+    "https://www.google.com/alerts/feeds/00744178061068326504/9023093616418965256"
 ]
 
 # --- 2. THE RADAR (KEYWORDS) ---
@@ -67,64 +67,85 @@ KEYWORDS = [
 ]
 
 # --- 3. THE LOGIC ---
+
+# Diversity Quota: Max items from any one category per run
+MAX_PER_CATEGORY = 10 
+
+def get_diversity_category(text):
+    """Internal logic to identify categories for balancing, keeping keywords organized above."""
+    text = text.lower()
+    if any(k in text for k in ["xbox", "gamepass", "microsoft", "activision"]):
+        return "XBOX"
+    if any(k in text for k in ["ps5", "playstation", "sony", "ps plus", "sie", "naughty dog", "insomniac"]):
+        return "PLAYSTATION"
+    if any(k in text for k in ["nintendo", "switch", "zelda", "mario"]):
+        return "NINTENDO"
+    if any(k in text for k in ["leak", "rumor", "rumour"]):
+        return "LEAKS"
+    return "GENERAL"
+
 def matches(entry):
-    # Search title, summary, and description to ensure nothing is missed
     title = entry.get("title", "")
     summary = entry.get("summary", "")
     description = entry.get("description", "")
     combined_text = (title + " " + summary + " " + description).lower()
     return any(k.lower() in combined_text for k in KEYWORDS)
 
-# Set a custom User-Agent to prevent Reddit from blocking the script
 feedparser.USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) NewsBot/1.0"
 
-entries = []
+raw_entries = []
 seen_links = set()
 
 for url in FEEDS:
     try:
         feed = feedparser.parse(url)
         for e in feed.entries:
-            link = e.get("link", "")
-            # Clean link to remove UTM parameters for better de-duplication
-            clean_link = link.split('?')[0]
-            
-            if not clean_link or clean_link in seen_links:
-                continue
+            link = e.get("link", "").split('?')[0]
+            if not link or link in seen_links: continue
             
             if matches(e):
-                seen_links.add(clean_link)
-                # Robust date check
+                seen_links.add(link)
                 raw_date = e.get("published_parsed") or e.get("updated_parsed") or time.gmtime()
                 
-                entries.append({
-                    "title": e.get("title", "No Title"),
-                    "link": clean_link,
-                    "published": raw_date
+                title = e.get("title", "No Title")
+                raw_entries.append({
+                    "title": title,
+                    "link": link,
+                    "published": raw_date,
+                    "category": get_diversity_category(title + " " + e.get("summary", ""))
                 })
     except Exception as err:
-        print(f"Skipping {url} due to error: {err}")
+        print(f"Skipping {url}: {err}")
 
-# Sort by date (newest first)
-entries.sort(key=lambda x: x["published"], reverse=True)
+# Sort by newest first
+raw_entries.sort(key=lambda x: x["published"], reverse=True)
+
+# Apply diversity filter
+final_entries = []
+category_counts = collections.defaultdict(int)
+
+for entry in raw_entries:
+    cat = entry["category"]
+    if category_counts[cat] < MAX_PER_CATEGORY:
+        final_entries.append(entry)
+        category_counts[cat] += 1
+    if len(final_entries) >= 100: break
 
 # --- 4. THE OUTPUT (XML GENERATION) ---
 rss = Element("rss")
 rss.set("version", "2.0")
 channel = SubElement(rss, "channel")
 
-SubElement(channel, "title").text = "Jay Respawns: Ultimate Gaming Feed"
+SubElement(channel, "title").text = "Jay Respawns: Ultimate Balanced Feed"
 SubElement(channel, "link").text = "https://jayrespawns.com"
-SubElement(channel, "description").text = "High-priority gaming news, leaks, and updates."
+SubElement(channel, "description").text = "Organized gaming news, leaks, and updates."
 
-# Cap at 100 items to keep it light
-for e in entries[:100]:
+for e in final_entries:
     item = SubElement(channel, "item")
-    SubElement(item, "title").text = str(e["title"])
+    SubElement(item, "title").text = f"[{e['category']}] {e['title']}"
     SubElement(item, "link").text = str(e["link"])
-    SubElement(item, "guid").text = str(e["link"]) # GUID is vital for Make.com
+    SubElement(item, "guid").text = str(e["link"])
     
-    # Ensure a valid RFC 822 date for Make.com
     try:
         pub_date_str = time.strftime("%a, %d %b %Y %H:%M:%S +0000", e["published"])
         SubElement(item, "pubDate").text = pub_date_str
@@ -132,8 +153,7 @@ for e in entries[:100]:
         current_time = time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime())
         SubElement(item, "pubDate").text = current_time
 
-# Save the file
 with open("feed.xml", "wb") as f:
     f.write(tostring(rss, encoding="utf-8"))
 
-print(f"Success! Processed {len(entries)} items across all categories.")
+print(f"Success! Balanced feed created with {len(final_entries)} items.")
