@@ -3,8 +3,8 @@ from datetime import datetime
 from xml.etree.ElementTree import Element, SubElement, tostring
 
 FEEDS = [
-    "https://example.com/rss",
-    "https://example2.com/rss"
+    "https://www.google.com/alerts/feeds/00744178061068326504/7865044773089010058",
+    "https://www.ign.com/rss/v2/articles/feed?channel=playstation"
 ]
 
 KEYWORDS = [
