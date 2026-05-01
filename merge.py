@@ -23,26 +23,37 @@ def matches(entry):
     return any(k.lower() in text for k in KEYWORDS)
 
 entries = []
+seen_links = set()  # This tracks unique URLs to prevent duplicates
 
 for url in FEEDS:
-    feed = feedparser.parse(url)
-    for e in feed.entries:
-        if matches(e):
-            entries.append({
-                "title": e.get("title", ""),
-                "link": e.get("link", ""),
-                "published": e.get("published_parsed")
-            })
+    try:
+        feed = feedparser.parse(url)
+        for e in feed.entries:
+            link = e.get("link", "")
+            
+            # Check 1: Does it match keywords?
+            # Check 2: Have we seen this link already in this run?
+            if matches(e) and link not in seen_links:
+                seen_links.add(link)
+                entries.append({
+                    "title": e.get("title", ""),
+                    "link": link,
+                    "published": e.get("published_parsed")
+                })
+    except Exception as e:
+        print(f"Error parsing {url}: {e}")
 
+# Sort by date (newest first)
 entries.sort(key=lambda x: x["published"] or datetime.min.timetuple(), reverse=True)
 
+# Build the RSS XML
 rss = Element("rss")
 rss.set("version", "2.0")
 channel = SubElement(rss, "channel")
 
-SubElement(channel, "title").text = "Filtered Feed"
+SubElement(channel, "title").text = "Filtered & De-duplicated Feed"
 SubElement(channel, "link").text = "https://github.com"
-SubElement(channel, "description").text = "Keyword filtered RSS"
+SubElement(channel, "description").text = "Keyword filtered RSS with no duplicates"
 
 for e in entries[:100]:
     item = SubElement(channel, "item")
