@@ -6,6 +6,34 @@ import collections
 
 # --- 1. THE NEWS NET (SOURCES) ---
 FEEDS = [
+    # === OFFICIAL FIRST-PARTY: CONSOLE MANUFACTURERS ===
+    "https://blog.playstation.com/feed/",           # PlayStation / Sony
+    "https://news.xbox.com/en-us/feed/",            # Xbox Wire / Microsoft
+    "https://feeds.feedburner.com/Nintendo",        # Nintendo
+    "https://store.steampowered.com/feeds/news/",   # Steam / Valve
+
+    # === OFFICIAL FIRST-PARTY: MAJOR PUBLISHERS & STUDIOS ===
+    "https://www.cdprojekt.com/en/feed/",           # CD Projekt RED (Witcher, Cyberpunk)
+    "https://www.platinumgames.com/official-blog/feed", # PlatinumGames (Bayonetta, Nier)
+    "https://www.atlus.com/feed",                   # Atlus (Persona, SMT)
+    "https://www.bioware.com/news/feed",            # BioWare (Dragon Age, Mass Effect)
+    "https://505games.com/news/feed/",              # 505 Games (Control, Ghostrunner)
+
+    # === OFFICIAL FIRST-PARTY: HARDWARE & GPU ===
+    "https://blogs.nvidia.com/feed/",               # NVIDIA (GPU, DLSS, RTX, GeForce)
+    "https://developer.nvidia.com/blog/feed/",      # NVIDIA GameDev tech deep-dives
+    "https://ir.amd.com/rss/news-releases.xml",     # AMD press releases (RX, RDNA, FSR)
+    "https://game.intel.com/us/feed/",              # Intel Arc gaming
+
+    # === PC GAMING & HARDWARE OUTLETS ===
+    "https://www.pcgamer.com/rss/",                 # PC Gamer
+    "https://www.rockpapershotgun.com/feed",        # Rock Paper Shotgun
+    "https://overclock3d.net/rss",                  # Overclock3D (GPU/CPU reviews & news)
+
+    # === OFFICIAL FIRST-PARTY: STOREFRONTS ===
+    "https://www.gog.com/blog/rss",                 # GOG (DRM-free games, sales)
+    "https://itch.io/blog.rss",                     # itch.io (indie releases)
+
     # === GLOBAL GAMING GIANTS ===
     "https://www.ign.com/rss/v2/articles/feed",
     "https://www.gamespot.com/feeds/news/",
@@ -16,7 +44,6 @@ FEEDS = [
     "https://www.dualshockers.com/feed/",
 
     # === PLAYSTATION SPECIALISTS ===
-    "https://blog.playstation.com/feed/",
     "https://www.pushsquare.com/feeds/latest",
 
     # === INDUSTRY & LEAKS ===
@@ -29,11 +56,6 @@ FEEDS = [
     "https://www.reddit.com/r/GameDeals/.rss",
     "https://www.tomshardware.com/gaming/rss",
 
-    # === OFFICIAL STUDIO BLOGS (PRIMARY SOURCES) ===
-    "https://www.rockstargames.com/newswire/feed",
-    "https://www.ubisoft.com/en-US/news/feed",
-    "https://www.ea.com/news/feed",
-
     # === INDIE GAMES ===
     "https://indiegames.com/feed",
     "https://www.reddit.com/r/IndieGaming/.rss",
@@ -42,6 +64,11 @@ FEEDS = [
     "https://www.reddit.com/r/games/.rss",
     "https://www.reddit.com/r/PS5/.rss",
     "https://www.reddit.com/r/XboxSeriesX/.rss",
+    "https://www.reddit.com/r/pcgaming/.rss",
+    "https://www.reddit.com/r/hardware/.rss",
+    "https://www.reddit.com/r/buildapc/.rss",
+    "https://www.reddit.com/r/nvidia/.rss",
+    "https://www.reddit.com/r/Amd/.rss",
 
     # === ESPORTS ===
     "https://www.espn.com/esports/rss/",
@@ -89,9 +116,40 @@ KEYWORDS = [
     "trailer", "release date", "patch notes", "DLC", "remaster", "remake", "new release",
     "deals", "discount",
 
-    # === TECHNOLOGY & GRAPHICS ===
-    "Ray tracing", "DLSS", "FSR", "frame rate", "4K", "1440p", "120fps", "performance",
-    "next-gen", "AI", "machine learning",
+    # === PC HARDWARE: GPU ===
+    "GPU", "graphics card", "graphics cards", "GeForce", "RTX", "GTX", "Radeon", "RX",
+    "Intel Arc", "NVIDIA", "AMD", "VRAM", "GDDR6", "GDDR7",
+
+    # === PC HARDWARE: CPU & PLATFORM ===
+    "CPU", "processor", "Ryzen", "Core i9", "Core i7", "Core i5", "Core Ultra",
+    "AM5", "LGA1851", "overclocking", "benchmark",
+
+    # === PC HARDWARE: MEMORY & STORAGE ===
+    "RAM", "DDR5", "DDR4", "SSD", "NVMe", "PCIe", "storage",
+
+    # === PC HARDWARE: DISPLAY & OUTPUT ===
+    "monitor", "display", "refresh rate", "Hz", "VRR", "G-Sync", "FreeSync",
+    "OLED", "QD-OLED", "HDR", "response time",
+
+    # === PC HARDWARE: PERIPHERALS ===
+    "gaming mouse", "gaming keyboard", "gaming headset", "gaming chair",
+    "controller", "gamepad", "haptic feedback",
+
+    # === GRAPHICS TECH ===
+    "Ray tracing", "path tracing", "DLSS", "DLSS 4", "FSR", "FSR 4", "XeSS",
+    "frame generation", "multi frame generation", "upscaling", "rasterization",
+    "tessellation", "ambient occlusion", "global illumination",
+
+    # === PERFORMANCE ===
+    "frame rate", "fps", "4K", "1440p", "1080p", "120fps", "240fps",
+    "performance", "benchmark", "latency", "input lag",
+
+    # === PC GAMING GENERAL ===
+    "PC gaming", "gaming PC", "gaming laptop", "gaming rig", "build",
+    "next-gen", "handheld PC", "ROG Ally", "Steam Deck", "Legion Go",
+
+    # === AI & TECH ===
+    "AI", "machine learning", "neural", "generative",
 
     # === GAME CONTENT TYPES ===
     "walkthrough", "speedrun", "emulation", "modding", "mods", "ROM hack",
@@ -128,10 +186,24 @@ def get_diversity_category(text):
         return "INDIE"
     return "GENERAL"
 
+NON_GAMING_SKIP = [
+    "new movies to watch", "movies on netflix", "movies on hbo", "movies on disney",
+    "movies on prime", "movies on peacock", "movies on hulu", "movies on paramount",
+    "new movies coming to", "movies leaving", "what to watch this weekend",
+    "what to watch on", "best movies", "every new movie", "every new show",
+    "every new series", "streaming movie guide", "weekend streaming",
+    "new shows on netflix", "new shows on hbo", "new on netflix", "new on hbo",
+]
+
 def matches(entry):
-    title = entry.get("title", "")
+    title = entry.get("title", "").lower()
     summary = entry.get("summary", "")
     description = entry.get("description", "")
+
+    # Reject obvious movie/TV roundups that aren't gaming-related
+    if any(skip in title for skip in NON_GAMING_SKIP):
+        return False
+
     combined_text = (title + " " + summary + " " + description).lower()
     return any(k.lower() in combined_text for k in KEYWORDS)
 
