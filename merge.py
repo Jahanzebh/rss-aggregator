@@ -44,7 +44,7 @@ FEEDS = [
 KEYWORDS = [
     # Subscriptions & Services
     "SIE", "Sony Interactive Entertainment", "Gamepass", "PS Plus", "PlayStation Plus", 
-    "PS+", "subscriptions", "subscription", "Xbox Live", "PSN",
+    "PS+", "subscriptions", "subscription", "Xbox Live", "PSN", "Epic Games", "Steam", "GOG",
     
     # Hardware & Platforms
     "Sony", "PlayStation", "PS5", "PS5 Pro", "Nintendo", "Switch", "Switch 2", "Xbox", 
