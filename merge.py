@@ -49,7 +49,7 @@ FEEDS = [
     # === INDUSTRY & LEAKS ===
     "https://www.videogameschronicle.com/feed/",
     "https://www.gamesindustry.biz/rss/news",
-    "https://www.reddit.com/r/GamingLeaksAndRumours/.rss",
+    # "https://www.reddit.com/r/GamingLeaksAndRumours/.rss",
 
     # === TECHNICAL & DEALS ===
     "https://www.eurogamer.net/feed/digitalfoundry",
@@ -58,17 +58,17 @@ FEEDS = [
 
     # === INDIE GAMES ===
     "https://indiegames.com/feed",
-    "https://www.reddit.com/r/IndieGaming/.rss",
+    # "https://www.reddit.com/r/IndieGaming/.rss",
 
     # === HIGH-SIGNAL GAMING COMMUNITIES ===
-    "https://www.reddit.com/r/games/.rss",
-    "https://www.reddit.com/r/PS5/.rss",
-    "https://www.reddit.com/r/XboxSeriesX/.rss",
-    "https://www.reddit.com/r/pcgaming/.rss",
-    "https://www.reddit.com/r/hardware/.rss",
-    "https://www.reddit.com/r/buildapc/.rss",
-    "https://www.reddit.com/r/nvidia/.rss",
-    "https://www.reddit.com/r/Amd/.rss",
+    # "https://www.reddit.com/r/games/.rss",
+    # "https://www.reddit.com/r/PS5/.rss",
+    # "https://www.reddit.com/r/XboxSeriesX/.rss",
+    # "https://www.reddit.com/r/pcgaming/.rss",
+    # "https://www.reddit.com/r/hardware/.rss",
+    # "https://www.reddit.com/r/buildapc/.rss",
+    # "https://www.reddit.com/r/nvidia/.rss",
+    # "https://www.reddit.com/r/Amd/.rss",
 
     # === ESPORTS ===
     "https://www.espn.com/esports/rss/",
