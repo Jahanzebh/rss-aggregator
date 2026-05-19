@@ -11,6 +11,9 @@ FEEDS = [
     "https://news.xbox.com/en-us/feed/",            # Xbox Wire / Microsoft
     "https://feeds.feedburner.com/Nintendo",        # Nintendo
     "https://store.steampowered.com/feeds/news/",   # Steam / Valve
+    "https://dotesports.com/tag/patch-notes/feed/", # patch notes feed covers Valorant, LoL, Apex, Fortnite, CS2
+    "https://www.pcgamer.com/tag/patch-notes/feed/", # broader game coverage
+    
 
     # === OFFICIAL FIRST-PARTY: MAJOR PUBLISHERS & STUDIOS ===
     "https://www.cdprojekt.com/en/feed/",           # CD Projekt RED (Witcher, Cyberpunk)
@@ -95,7 +98,8 @@ KEYWORDS = [
 
     # === HARDWARE & PLATFORMS ===
     "Sony", "PlayStation", "PS5", "PS5 Pro", "Nintendo", "Switch", "Switch 2", "Xbox",
-    "Steam Deck", "PC Gaming", "Console", "Handheld", "Cloud gaming",
+    "Steam Deck", "PC Gaming", "Console", "Handheld", "Cloud gaming","patch notes", 
+    "hotfix", "update X.X", "v1.", "balance update", "season X patch"
 
     # === MAJOR PUBLISHERS & JAPANESE GIANTS ===
     "Tencent", "Take-Two", "Take2", "Rockstar", "2K Games", "Capcom", "Square Enix",
